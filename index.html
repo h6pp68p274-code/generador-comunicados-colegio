@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Generador institucional de comunicados escolares con catastro e impresión.">
+  <title>Generador de comunicados</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230d3767'/%3E%3Cpath d='M18 16h28v33H18z' fill='white'/%3E%3Cpath d='M23 24h18M23 31h18M23 38h12' stroke='%230d3767' stroke-width='3'/%3E%3C/svg%3E">
+  <style>
+    :root{--navy:#790000;--navy2:#a9001a;--ink:#171717;--muted:#6d6565;--line:#e0d7d7;--soft:#f8f4f4;--paper:#fff;--accent:#efb900;--danger:#a43a3a;--shadow:0 12px 34px rgba(80,0,12,.14)}
+    *{box-sizing:border-box} body{margin:0;background:#e9eef3;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px}
+    button,input,textarea,select{font:inherit} button{cursor:pointer} .app{min-height:100vh;display:grid;grid-template-columns:minmax(350px,440px) 1fr}
+    .sidebar{background:#fff;border-right:1px solid var(--line);height:100vh;position:sticky;top:0;display:flex;flex-direction:column;min-width:0}
+    .brand{display:flex;align-items:center;gap:13px;padding:20px 22px 16px;border-bottom:1px solid var(--line)} .brandmark{width:42px;height:42px;border-radius:11px;background:var(--navy);display:grid;place-items:center;color:#fff;font-family:Georgia,serif;font-weight:700;font-size:21px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+    .brand h1{font:700 18px/1.15 Georgia,"Times New Roman",serif;margin:0;color:var(--navy)} .brand p{margin:4px 0 0;color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+    .tabs{display:flex;padding:12px 16px 0;gap:5px;border-bottom:1px solid var(--line)} .tab{border:0;background:transparent;color:var(--muted);padding:10px 12px;border-bottom:3px solid transparent;font-weight:650;font-size:14px}.tab[aria-selected="true"]{color:var(--navy);border-color:var(--navy)}
+    .panel{display:none;overflow:auto;padding:18px 20px 120px}.panel.active{display:block}.section-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px}.section-title h2{font-size:15px;margin:0;color:var(--navy);text-transform:uppercase;letter-spacing:.06em}.hint{color:var(--muted);font-size:12px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-size:13px;font-weight:650;color:#344253}.field input,.field textarea,.field select{width:100%;border:1px solid #cbd5e0;border-radius:8px;padding:10px 11px;background:#fff;color:var(--ink);outline:none;transition:.15s}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--navy2);box-shadow:0 0 0 3px rgba(23,79,134,.11)}.field textarea{min-height:148px;resize:vertical;line-height:1.5}.field small{font-size:12px;color:var(--muted)}
+    .btnrow{position:absolute;bottom:0;left:0;right:0;padding:14px 20px 18px;background:linear-gradient(transparent,#fff 18%);display:grid;grid-template-columns:1fr 1fr;gap:9px}.btn{border:1px solid var(--line);border-radius:8px;padding:10px 13px;background:#fff;color:var(--navy);font-weight:700}.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}.btn.gold{background:var(--accent);color:#1e2b37;border-color:#b89539}.btn.danger{color:var(--danger)}.btn.small{padding:7px 9px;font-size:12px}.btn:focus-visible,.tab:focus-visible{outline:3px solid rgba(23,79,134,.28);outline-offset:2px}
+    .workspace{padding:28px clamp(18px,4vw,58px) 50px;min-width:0}.topbar{max-width:900px;margin:0 auto 15px;display:flex;justify-content:space-between;align-items:center;gap:15px}.topbar .status{font-size:13px;color:var(--muted)}.actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+    .paper{width:min(100%,816px);min-height:1286px;height:auto;margin:auto;background:var(--paper);box-shadow:var(--shadow);padding:0 70px 42px;position:relative;font-family:Calibri,"Segoe UI",Arial,sans-serif;display:flex;flex-direction:column}
+    .letterhead{height:178px;margin:0 -70px 18px;position:relative;background:#fff url('encabezado-san-marcos.png') top center/100% auto no-repeat;overflow:hidden}.headmeta{position:absolute;right:58px;top:56px;text-align:right;color:var(--accent);text-shadow:0 1px rgba(70,0,0,.35)}.headmeta strong{display:block;font-size:21px;font-weight:650}.headmeta span{display:block;margin-top:5px;color:#fff;font-size:10px;letter-spacing:.16em;text-transform:uppercase}.doccode{position:absolute;right:58px;bottom:9px;background:#fff;padding:7px 12px 6px;border-bottom:3px solid var(--accent);color:var(--navy);font-family:Calibri,"Segoe UI",Arial,sans-serif;box-shadow:0 4px 14px rgba(75,0,0,.12)}.doccode strong{font-size:10px;text-transform:uppercase;letter-spacing:.12em;margin-right:8px}.doccode span{font-size:12px;font-weight:750}
+    .date{text-align:right;margin:4px 0 28px;font-size:15px;font-weight:700}.recipient{line-height:1.5;margin-bottom:28px;font-size:16px}.recipient strong{display:block}.subject{display:none}
+    .body{font-size:16px;line-height:1.68;text-align:justify;overflow-wrap:anywhere}.body p{margin:0 0 17px}.body ul{margin:0 0 18px;padding-left:29px}.body li{margin:0 0 9px;padding-left:6px}.body strong{font-weight:700}.closing{margin-top:20px;font-size:16px}.signature{margin:44px 28px 0 auto;width:255px;text-align:center}.sigline{height:120px;margin-bottom:-7px;position:relative}.stamp{width:132px;height:132px;object-fit:contain}.signature strong{display:block;color:#111;font-size:15px}.signature span{font-size:14px;color:#222}
+    .footer{margin-top:auto;padding-top:34px}.footerline{border-top:1px solid var(--line);padding-top:10px;display:flex;justify-content:space-between;gap:12px;color:#6c7784;font:11px/1.4 Inter,sans-serif}.footerline strong{color:var(--navy)}
+    .empty{padding:30px 18px;text-align:center;border:1px dashed #bdc9d5;border-radius:10px;color:var(--muted);font-size:14px}.search{margin-bottom:14px}.records{display:grid;gap:10px}.record{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}.recordtop{display:flex;justify-content:space-between;gap:8px}.record strong{font-size:14px;color:var(--navy)}.record p{margin:5px 0 10px;color:var(--muted);font-size:12px}.recordactions{display:flex;gap:6px;flex-wrap:wrap}.badge{font-size:11px;padding:3px 7px;background:#edf3f8;border-radius:999px;color:var(--navy)}
+    .settings-sep{border:0;border-top:1px solid var(--line);margin:20px 0}.upload{border:1px dashed #b6c3d0;border-radius:8px;padding:12px;text-align:center}.upload input{font-size:12px}
+    .toast{position:fixed;right:22px;bottom:22px;background:#15293d;color:#fff;padding:12px 16px;border-radius:9px;box-shadow:var(--shadow);font-size:14px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1;transform:none}
+    @media(max-width:980px){.app{grid-template-columns:1fr}.sidebar{height:auto;position:relative}.panel{max-height:none;padding-bottom:95px}.btnrow{position:fixed;z-index:10;box-shadow:0 -8px 24px rgba(121,0,0,.09)}.workspace{padding:22px 12px 100px}.paper{min-height:1040px;padding:0 38px 34px}.letterhead{margin-inline:-38px;height:150px}.headmeta{right:28px;top:46px}.headmeta strong{font-size:17px}.doccode{right:28px}}
+    @media(max-width:560px){.grid2{grid-template-columns:1fr}.brand{padding-inline:16px}.panel{padding-inline:16px}.topbar{align-items:flex-start;flex-direction:column}.actions{justify-content:flex-start}.paper{padding:0 22px 28px}.letterhead{margin-inline:-22px;height:118px;background-size:auto 118px;background-position:top left}.headmeta{right:14px;top:40px}.headmeta strong{font-size:14px}.headmeta span{font-size:8px}.doccode{right:14px;bottom:3px}.doccode strong{display:none}.footerline{flex-direction:column}.signature{width:220px;margin-right:0}.tabs{overflow:auto}}
+    @media print{body{background:#fff}.sidebar,.topbar,.toast{display:none!important}.app{display:block}.workspace{padding:0}.paper{box-shadow:none;width:8.5in;min-height:13.4in;margin:0;padding:2.02in .72in .48in}.letterhead{position:fixed;z-index:2;top:0;left:0;right:0;margin:0;height:1.82in;break-inside:avoid}.headmeta{right:.6in;top:.58in}.doccode{right:.6in}.signature,.footer{break-inside:avoid}@page{size:8.5in 13.4in;margin:0}}
+  </style>
+</head>
+<body>
+<main class="app">
+  <aside class="sidebar" aria-label="Panel del generador">
+    <header class="brand"><div class="brandmark">C</div><div><h1>Comunicados</h1><p>Gestión institucional</p></div></header>
+    <nav class="tabs" aria-label="Secciones">
+      <button class="tab" data-tab="editor" aria-selected="true">Redactar</button>
+      <button class="tab" data-tab="records" aria-selected="false">Catastro <span id="countBadge"></span></button>
+      <button class="tab" data-tab="settings" aria-selected="false">Institución</button>
+    </nav>
+    <section class="panel active" id="editorPanel">
+      <div class="section-title"><h2>Nuevo comunicado</h2><span class="hint" id="saveState">Sin guardar</span></div>
+      <div class="grid2">
+        <div class="field"><label for="number">N.º de comunicado</label><input id="number" inputmode="numeric"></div>
+        <div class="field"><label for="date">Fecha</label><input id="date" type="date"></div>
+      </div>
+        <div class="field"><label for="audience">Destinatarios</label><input id="audience" placeholder="Ej.: Estimadas familias y apoderados de III Medio A y III Medio B"></div>
+      <div class="field"><label for="subject">Asunto</label><input id="subject" placeholder="Tema principal del comunicado"></div>
+      <div class="field"><label for="greeting">Saludo inicial</label><input id="greeting" value="Junto con saludarles, informamos que:"></div>
+      <div class="field"><label for="content">Contenido</label><textarea id="content" placeholder="Escriba el cuerpo del comunicado. Separe los párrafos con una línea en blanco."></textarea><small>Use **doble asterisco** para negrita y comience una línea con “- ” para crear una lista. El texto se justificará automáticamente.</small></div>
+      <div class="field"><label for="closing">Cierre</label><textarea id="closing" style="min-height:72px">Sin otro particular, se despide atentamente,</textarea></div>
+      <div class="grid2">
+        <div class="field"><label for="signer">Emite</label><input id="signer" value="Dirección Académica"></div>
+        <div class="field"><label for="role">Institución o cargo</label><input id="role" value="Colegio San Marcos"></div>
+      </div>
+      <div class="btnrow"><button class="btn" id="newBtn">Limpiar</button><button class="btn primary" id="saveBtn">Guardar en catastro</button></div>
+    </section>
+    <section class="panel" id="recordsPanel">
+      <div class="section-title"><h2>Catastro</h2><span class="hint" id="recordCount">0 registros</span></div>
+      <div class="field search"><label for="search">Buscar</label><input id="search" type="search" placeholder="Número, asunto o destinatario"></div>
+      <div class="records" id="recordsList"></div>
+      <hr class="settings-sep"><div class="grid2"><button class="btn small" id="exportBtn">Respaldar catastro</button><label class="btn small" style="text-align:center">Importar respaldo<input id="importInput" type="file" accept="application/json" hidden></label></div>
+    </section>
+    <section class="panel" id="settingsPanel">
+      <div class="section-title"><h2>Identidad institucional</h2></div>
+      <div class="field"><label for="schoolName">Nombre del colegio</label><input id="schoolName" value="Colegio San Marcos"></div>
+      <div class="field"><label for="schoolDescriptor">Área que emite</label><input id="schoolDescriptor" value="Dirección Académica"></div>
+      <div class="grid2"><div class="field"><label for="city">Ciudad</label><input id="city" value="Antofagasta"></div><div class="field"><label for="schoolYear">Año</label><input id="schoolYear" inputmode="numeric"></div></div>
+      <div class="field"><label for="contact">Pie de página</label><input id="contact" value="Antofagasta · Educar el corazón"></div>
+      <hr class="settings-sep"><p class="hint">Los datos y el catastro se guardan localmente en este navegador. Use “Respaldar catastro” para conservar una copia.</p>
+    </section>
+  </aside>
+  <section class="workspace" aria-label="Vista previa del comunicado">
+    <div class="topbar"><div class="status"><strong>Vista previa</strong> · El documento se adapta al contenido</div><div class="actions"><button class="btn" id="duplicateBtn">Duplicar</button><button class="btn gold" id="printBtn">Imprimir / Guardar PDF</button></div></div>
+    <article class="paper" id="paper">
+      <header class="letterhead"><div class="headmeta"><strong id="pDescriptor">Dirección Académica</strong><span>Comunicado institucional</span></div><div class="doccode"><strong id="pSchoolName">Colegio San Marcos</strong><span id="pNumber">N.º 001 · 2026</span></div></header>
+      <div class="date" id="pDate">Antofagasta, 6 de octubre de 2026</div>
+      <div class="recipient"><strong id="pAudience">Estimadas familias y apoderados</strong></div>
+      <div class="subject"><b>Asunto:</b><span id="pSubject">Información a la comunidad educativa</span></div>
+      <section class="body"><p id="pGreeting">Junto con saludar cordialmente, informamos a usted que:</p><div id="pContent"><p>Complete los campos del formulario para redactar el comunicado.</p></div></section>
+      <div class="closing" id="pClosing">Sin otro particular, se despide atentamente,</div>
+      <div class="signature"><div class="sigline"><img class="stamp" src="timbre-direccion.png" alt="Firma y timbre de Dirección Académica"></div><strong id="pSigner">Dirección Académica</strong><span id="pRole">Colegio San Marcos</span></div>
+      <footer class="footer"><div class="footerline"><span><strong id="pFooterSchool">Colegio San Marcos</strong><br><span id="pContact">Antofagasta · Educar el corazón</span></span><span id="pFooterCode">Comunicado N.º 001 · 2026</span></div></footer>
+    </article>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+  const KEY='colegio-comunicados-v1', CFG='colegio-config-v1';
+  const $=id=>document.getElementById(id); const ids=['number','date','audience','subject','greeting','content','closing','signer','role'];
+  let currentId=null, records=read(KEY,[]), config=read(CFG,{});
+  const today=new Date(); $('date').value=today.toISOString().slice(0,10); $('schoolYear').value=today.getFullYear();
+  Object.entries(config).forEach(([k,v])=>{if($(k)&&k!=='logo') $(k).value=v});
+  function read(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch{return f}}
+  function persist(){localStorage.setItem(KEY,JSON.stringify(records));localStorage.setItem(CFG,JSON.stringify(getConfig()))}
+  function getConfig(){return {schoolName:$('schoolName').value,schoolDescriptor:$('schoolDescriptor').value,city:$('city').value,schoolYear:$('schoolYear').value,contact:$('contact').value}}
+  function nextNumber(){const y=String($('schoolYear').value||today.getFullYear());const nums=records.filter(r=>String(r.year)===y).map(r=>Number(r.number)||0);return String((Math.max(0,...nums)+1)).padStart(3,'0')}
+  if(!$('number').value) $('number').value=nextNumber();
+  function esc(s=''){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+  function rich(s=''){return esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}
+  function renderContent(raw){const blocks=(raw||'Complete los campos del formulario para redactar el comunicado.').split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);return blocks.map(block=>{const lines=block.split('\n').map(x=>x.trim()).filter(Boolean);if(lines.length&&lines.every(x=>x.startsWith('- ')))return `<ul>${lines.map(x=>`<li>${rich(x.slice(2))}</li>`).join('')}</ul>`;return `<p>${lines.map(rich).join('<br>')}</p>`}).join('')}
+  function fmtDate(v){if(!v)return '';const d=new Date(v+'T12:00:00');return new Intl.DateTimeFormat('es-CL',{day:'numeric',month:'long',year:'numeric'}).format(d)}
+  function update(){const c=getConfig(), num=String($('number').value||'—').padStart(3,'0');config=c;
+    $('pSchoolName').textContent=c.schoolName||'Colegio San Marcos';$('pDescriptor').textContent=c.schoolDescriptor||'Dirección Académica';$('pNumber').textContent=`N.º ${num} · ${c.schoolYear}`;$('pFooterCode').textContent=`Comunicado N.º ${num} · ${c.schoolYear}`;$('pFooterSchool').textContent=c.schoolName||'Colegio San Marcos';$('pContact').textContent=c.contact||'';
+    $('pDate').textContent=`${c.city||'Ciudad'}, ${fmtDate($('date').value)}`;$('pAudience').textContent=$('audience').value||'Estimadas familias y apoderados';$('pSubject').textContent=$('subject').value||'Información a la comunidad educativa';$('pGreeting').textContent=$('greeting').value||'';$('pClosing').textContent=$('closing').value||'';$('pSigner').textContent=$('signer').value||'Dirección Académica';$('pRole').textContent=$('role').value||'Colegio San Marcos';
+    $('pContent').innerHTML=renderContent($('content').value);
+    persist();
+  }
+  function formData(){return {id:currentId||crypto.randomUUID(),number:$('number').value,date:$('date').value,audience:$('audience').value,subject:$('subject').value,greeting:$('greeting').value,content:$('content').value,closing:$('closing').value,signer:$('signer').value,role:$('role').value,year:$('schoolYear').value,updatedAt:new Date().toISOString()}}
+  function save(){if(!$('subject').value.trim()||!$('content').value.trim()){toast('Complete el asunto y el contenido.');return}const r=formData(),i=records.findIndex(x=>x.id===r.id);if(i>=0)records[i]=r;else records.unshift(r);currentId=r.id;persist();renderRecords();$('saveState').textContent='Guardado';toast('Comunicado guardado en el catastro.');}
+  function clearForm(){currentId=null;ids.forEach(id=>{if(!['date','greeting','closing','signer','role'].includes(id))$(id).value=''});$('date').value=new Date().toISOString().slice(0,10);$('greeting').value='Junto con saludarles, informamos que:';$('closing').value='Sin otro particular, se despide atentamente,';$('signer').value='Dirección Académica';$('role').value='Colegio San Marcos';$('number').value=nextNumber();$('saveState').textContent='Sin guardar';update()}
+  function loadRecord(id){const r=records.find(x=>x.id===id);if(!r)return;currentId=id;ids.forEach(k=>$(k).value=r[k]||'');$('schoolYear').value=r.year||today.getFullYear();switchTab('editor');$('saveState').textContent='Editando registro';update()}
+  function removeRecord(id){if(!confirm('¿Eliminar este comunicado del catastro?'))return;records=records.filter(x=>x.id!==id);if(currentId===id)clearForm();persist();renderRecords();toast('Registro eliminado.');}
+  function renderRecords(){const q=$('search').value.toLowerCase().trim(), list=records.filter(r=>[r.number,r.subject,r.audience,r.signer].join(' ').toLowerCase().includes(q));$('recordCount').textContent=`${records.length} ${records.length===1?'registro':'registros'}`;$('countBadge').textContent=records.length?`(${records.length})`:'';$('recordsList').innerHTML=list.length?list.map(r=>`<article class="record"><div class="recordtop"><strong>N.º ${esc(String(r.number).padStart(3,'0'))} · ${esc(r.year)}</strong><span class="badge">${esc(fmtDate(r.date))}</span></div><p>${esc(r.subject||'Sin asunto')}<br>${esc(r.audience||'Sin destinatario')}</p><div class="recordactions"><button class="btn small" data-open="${r.id}">Abrir</button><button class="btn small" data-copy="${r.id}">Duplicar</button><button class="btn small danger" data-delete="${r.id}">Eliminar</button></div></article>`).join(''):`<div class="empty">${q?'No hay resultados para esta búsqueda.':'Aún no hay comunicados guardados.'}</div>`}
+  function duplicate(id=currentId){const r=id&&records.find(x=>x.id===id);if(r){currentId=null;ids.forEach(k=>$(k).value=r[k]||'');$('number').value=nextNumber();$('date').value=new Date().toISOString().slice(0,10);$('subject').value=`Copia · ${r.subject||''}`;switchTab('editor');$('saveState').textContent='Nueva copia sin guardar';update()}else toast('Abra o guarde un comunicado antes de duplicarlo.')}
+  function switchTab(name){document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===name)));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));$(name+'Panel').classList.add('active')}
+  function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('show'),2400)}
+  [...ids,'schoolName','schoolDescriptor','city','schoolYear','contact'].forEach(id=>$(id).addEventListener('input',()=>{$('saveState').textContent='Cambios sin guardar';update()}));
+  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));$('saveBtn').addEventListener('click',save);$('newBtn').addEventListener('click',clearForm);$('printBtn').addEventListener('click',()=>window.print());$('duplicateBtn').addEventListener('click',()=>duplicate());$('search').addEventListener('input',renderRecords);
+  $('recordsList').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.open)loadRecord(b.dataset.open);if(b.dataset.copy)duplicate(b.dataset.copy);if(b.dataset.delete)removeRecord(b.dataset.delete)});
+  $('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),config,records},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`catastro-comunicados-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href)});
+  $('importInput').addEventListener('change',async e=>{try{const data=JSON.parse(await e.target.files[0].text());if(!Array.isArray(data.records))throw Error();if(records.length&&!confirm('Esto reemplazará el catastro actual. ¿Continuar?'))return;records=data.records;config=data.config||config;Object.entries(config).forEach(([k,v])=>{if($(k)&&k!=='logo')$(k).value=v});persist();renderRecords();clearForm();toast('Respaldo importado correctamente.')}catch{toast('El archivo de respaldo no es válido.')}e.target.value=''});
+  if(document.modelContext?.registerTool){try{document.modelContext.registerTool({name:'draft_school_communication',title:'Preparar comunicado',description:'Completa el borrador visible de un comunicado escolar sin guardarlo en el catastro.',inputSchema:{type:'object',properties:{audience:{type:'string'},subject:{type:'string'},content:{type:'string'},signer:{type:'string'},role:{type:'string'}},required:['subject','content'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(input){['audience','subject','content','signer','role'].forEach(k=>{if(typeof input[k]==='string')$(k).value=input[k]});currentId=null;update();return {status:'drafted',number:$('number').value,subject:$('subject').value}}})}catch{}}
+  renderRecords();update();
+})();
+</script>
+</body>
+</html>
